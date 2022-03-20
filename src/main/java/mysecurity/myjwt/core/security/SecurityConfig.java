@@ -1,8 +1,6 @@
 package mysecurity.myjwt.core.security;
 
 import lombok.RequiredArgsConstructor;
-import mysecurity.myjwt.entities.Permission;
-import mysecurity.myjwt.entities.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -45,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new AuthorizationFilter(jwtConfig), AuthenticationFilter.class)
                 .authorizeRequests()
 
-                .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers("/login").permitAll()
                 .antMatchers("/","index","/css/*","/js/*").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/v1/auth/signup").permitAll()
 
@@ -59,6 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .anyRequest().authenticated();
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

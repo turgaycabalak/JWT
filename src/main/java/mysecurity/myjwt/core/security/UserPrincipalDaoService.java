@@ -3,9 +3,9 @@ package mysecurity.myjwt.core.security;
 import lombok.RequiredArgsConstructor;
 import mysecurity.myjwt.dataAccess.UserRepository;
 import mysecurity.myjwt.entities.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository("dao-service-v1")
@@ -14,10 +14,11 @@ public class UserPrincipalDaoService implements UserPrincipalDao{
     private final UserRepository userRepository;
 
     @Override
-    public Optional<UserPrincipal> getUserPrincipalByUsername(String username) {
-        User user = userRepository.findByEmail(username).get();
+    public UserPrincipal getUserPrincipalByUsername(String username) throws UsernameNotFoundException{
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found: " + username));
 
-        return Optional.of(new UserPrincipal(
+        return new UserPrincipal(
                 user.getRole().getGrantedAuthorities(),
                 user.getPassword(),
                 user.getEmail(),
@@ -25,7 +26,7 @@ public class UserPrincipalDaoService implements UserPrincipalDao{
                 true,
                 true,
                 user.isEnabled()
-        ));
+        );
     }
 
 }

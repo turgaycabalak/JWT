@@ -65,4 +65,5 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         response.addHeader(jwtConfig.getHeaderString(), jwtConfig.getTokenPrefix() + token);
     }
+
 }

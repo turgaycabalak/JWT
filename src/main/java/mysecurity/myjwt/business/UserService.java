@@ -6,6 +6,7 @@ import mysecurity.myjwt.entities.User;
 import mysecurity.myjwt.entities.dto.UserDtoConverter;
 import mysecurity.myjwt.entities.dto.UserRegistration;
 import mysecurity.myjwt.entities.dto.UserResponse;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import static mysecurity.myjwt.business.UserRegistrationValidator.*;
@@ -25,7 +26,7 @@ public class UserService {
                 .and(hasEmailBeenUsedBefore())
                 .apply(userRegistration, this);
         if(result != SUCCESS){
-            throw new IllegalStateException(result.name());
+            throw new BadCredentialsException(result.name());
         }
 
         User userWillSaveDb = userDtoConverter.convertToUser(userRegistration);

@@ -1,5 +1,8 @@
 package mysecurity.myjwt.core.security;
 
+import lombok.RequiredArgsConstructor;
+import mysecurity.myjwt.dataAccess.UserRepository;
+import mysecurity.myjwt.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,8 +23,7 @@ public class UserPrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userPrincipalDao.getUserPrincipalByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found: " + username));
+        return userPrincipalDao.getUserPrincipalByUsername(username);
     }
 
 }
