@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,6 +23,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+
+@Slf4j
 @RequiredArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
 
@@ -68,6 +72,9 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (JwtException e){
+            log.error("Error logging in: {}", e.getMessage());
+            response.setHeader("Error", e.getMessage());
+            response.sendError(FORBIDDEN.value());
             throw new IllegalStateException("Token cannot be trusted: " + token);
         }
 

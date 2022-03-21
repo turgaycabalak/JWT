@@ -6,13 +6,15 @@ import mysecurity.myjwt.entities.dto.UserRegistration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
@@ -20,7 +22,11 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUpUser(@Valid @RequestBody UserRegistration userRegistration){
-        return new ResponseEntity<>(userService.saveUser(userRegistration), HttpStatus.CREATED);
+//        return new ResponseEntity<>(userService.saveUser(userRegistration), HttpStatus.CREATED);
+
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/v1/auth/signup").toUriString());
+        return ResponseEntity.created(uri).body(userService.saveUser(userRegistration));
     }
 
     ///////// Login Method   /////////
@@ -36,3 +42,4 @@ public class AuthController {
 
 
 }
+

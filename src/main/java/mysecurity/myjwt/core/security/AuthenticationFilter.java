@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import java.util.Date;
 
 
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
@@ -32,6 +34,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         try {
             // Grab credentials - username, password -> UserLoginReq
             UserLoginReq userLoginReq = new ObjectMapper().readValue(request.getInputStream(), UserLoginReq.class);
+            log.info("Username is: {}",userLoginReq.getUsername());
+            log.info("Password is: {}",userLoginReq.getPassword());
 
             // Credentials (Input)
             Authentication authenticationCredentials = new UsernamePasswordAuthenticationToken(

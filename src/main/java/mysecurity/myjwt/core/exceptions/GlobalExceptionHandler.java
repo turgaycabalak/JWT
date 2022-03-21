@@ -60,7 +60,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {BadCredentialsException.class})
     public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException e){
         // 1. Create payload containing exception details
-        HttpStatus httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         ApiException apiException = new ApiException(
                 e.getMessage(),
                 httpStatus,
@@ -69,6 +69,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         // 2. Return response entity
         return new ResponseEntity<>(apiException, httpStatus);
     }
+
 
 
 

@@ -15,11 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static mysecurity.myjwt.entities.Permission.*;
 import static mysecurity.myjwt.entities.Role.*;
+import static org.springframework.http.HttpMethod.*;
 
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserPrincipalDetailsService userPrincipalDetailsService;
@@ -45,18 +46,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/login").permitAll()
                 .antMatchers("/","index","/css/*","/js/*").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/v1/auth/signup").permitAll()
+                .antMatchers(POST,"/api/v1/auth/signup").permitAll()
 
 
                 .antMatchers("/users").hasAnyRole(USER.name(), ADMIN.name(), SYSTEM_MANAGER.name())
                 .antMatchers("/admins").hasAnyRole(ADMIN.name(), SYSTEM_MANAGER.name())
                 .antMatchers("/systems").hasRole(SYSTEM_MANAGER.name())
-                .antMatchers(HttpMethod.POST,"/systems").hasAuthority(ADMIN_WRITE.name())
-                .antMatchers(HttpMethod.PUT,"/systems").hasAuthority(ADMIN_WRITE.name())
-                .antMatchers(HttpMethod.DELETE,"/systems").hasAuthority(ADMIN_WRITE.name())
+                .antMatchers(POST,"/systems").hasAuthority(ADMIN_WRITE.name())
+                .antMatchers(PUT,"/systems").hasAuthority(ADMIN_WRITE.name())
+                .antMatchers(DELETE,"/systems").hasAuthority(ADMIN_WRITE.name())
 
                 .anyRequest().authenticated();
     }
+
 
 
 
