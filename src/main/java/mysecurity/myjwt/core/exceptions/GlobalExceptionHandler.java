@@ -1,5 +1,6 @@
 package mysecurity.myjwt.core.exceptions;
 
+import mysecurity.myjwt.core.exceptions.customExceptions.UserNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
-import java.net.ConnectException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,10 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest request) {
 
         Map<String, Object> body = new HashMap<>();
 
@@ -40,27 +43,50 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest request) {
 
         Map<String, Object> body = new HashMap<>();
         body.put("error", ex.getMessage());
 
-        return new ResponseEntity<>(body,headers,status);
+        return new ResponseEntity<>(body, headers, status);
     }
 
 
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleConstraintValidationException(ConstraintViolationException ex){
-        return new ResponseEntity<>("Error: "+ex.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> handleConstraintValidationException(ConstraintViolationException e){
+        // 1. Create payload containing exception details
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                httpStatus,
+                LocalDateTime.now()
+        );
+        // 2. Return response entity
+        return new ResponseEntity<>(apiException, httpStatus);
     }
-
-////////////////////////  CUSTOM EXCEPTIONS  /////////////////////////////////
 
     @ExceptionHandler(value = {BadCredentialsException.class})
     public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException e){
         // 1. Create payload containing exception details
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                httpStatus,
+                LocalDateTime.now()
+        );
+        // 2. Return response entity
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+////////////////////////  CUSTOM EXCEPTIONS  /////////////////////////////////
+
+    @ExceptionHandler(value = {UserNotFoundException.class})
+    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException e){
+        // 1. Create payload containing exception details
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         ApiException apiException = new ApiException(
                 e.getMessage(),
                 httpStatus,

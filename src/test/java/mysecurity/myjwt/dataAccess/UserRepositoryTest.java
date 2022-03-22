@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static mysecurity.myjwt.entities.Role.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,9 +28,9 @@ class UserRepositoryTest {
     @Test
     public void saveUser(){
         User user = new User(
+                LocalDateTime.now(),
                 "turgay",
                 passwordEncoder.encode("123456"),
-                LocalDateTime.now(),
                 SYSTEM_MANAGER
         );
 
@@ -41,6 +42,19 @@ class UserRepositoryTest {
         String email = "aYAz";
         boolean result = userRepository.existsByEmail(email);
         System.out.println("SONUC : "+result);
+    }
+
+    @Test
+    public void findUserByEmail(){
+        Optional<User> user = userRepository.findByEmail("ayaz5@mail.com");
+        user.orElseThrow(()-> new IllegalStateException("user bulunamadi !!!!!"));
+        System.out.println(user);
+    }
+
+
+    @Test
+    public void deleteUserById(){
+        userRepository.deleteById(7L);
     }
 
 

@@ -18,14 +18,14 @@ public class UserDtoConverter {
 
     public User convertToUser(UserRegistration userRegistration){
         return new User(
+                LocalDateTime.now(),
                 userRegistration.getEmail(),
                 passwordEncoder.encode(userRegistration.getPassword()),
-                LocalDateTime.now(),
                 USER
         );
     }
 
-    public UserResponse convertToUserResponse(User user){
+    public static UserResponse convertToUserResponse(User user){
         return new UserResponse(
                 user.getId(),
                 user.getEmail(),

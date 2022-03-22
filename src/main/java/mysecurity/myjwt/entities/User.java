@@ -19,9 +19,6 @@ public class User extends BaseEntity {
     @Column(nullable = false,length = 100)
     private String password;
 
-    @Column(name = "create_time",nullable = false)
-    private LocalDateTime createdTime;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
@@ -29,14 +26,16 @@ public class User extends BaseEntity {
     private boolean isEnabled = true;
 
 
-    public User(String email,
+
+    public User(LocalDateTime createdTime,
+                String email,
                 String password,
-                LocalDateTime createdTime,
                 Role role) {
 
+        super(createdTime);
         this.email = email;
         this.password = password;
-        this.createdTime = createdTime;
         this.role = role;
     }
+
 }

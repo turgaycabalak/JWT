@@ -1,5 +1,7 @@
 package mysecurity.myjwt.core.security;
 
+import lombok.extern.slf4j.Slf4j;
+import mysecurity.myjwt.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class UserPrincipalDetailsService implements UserDetailsService {
 
     private final UserPrincipalDao userPrincipalDao;
@@ -20,7 +23,21 @@ public class UserPrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userPrincipalDao.getUserPrincipalByUsername(username);
+        User user = userPrincipalDao.getUserByUsername(username)
+                .orElseThrow(() -> {
+                    log.error("Username not found: " + username);
+                    throw new UsernameNotFoundException("Username not found: " + username);
+                });
+
+        return new UserPrincipal(
+                user.getRole().getGrantedAuthorities(),
+                user.getPassword(),
+                user.getEmail(),
+                true,
+                true,
+                true,
+                user.isEnabled()
+        );
     }
 
 }

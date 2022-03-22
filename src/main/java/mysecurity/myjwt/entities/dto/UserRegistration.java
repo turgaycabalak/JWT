@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -14,18 +13,16 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class UserRegistration {
 
-    @NotBlank(message = "Email is required!")
-    @NotNull
-    @Email(message = "Email should be correct format!")
+    @NotNull(message = "{application.constraints.email.NotNull.message}")
+    @Email(message = "{application.constraints.email.Email.message}")
+    @Size(min = 2, max = 50, message = "{application.constraints.email.Size.message}")
     private String email;
 
-    @NotBlank(message = "Password is required!")
-    @NotNull
-    @Size(min = 5,max = 25,message = "Password should be between 6 and 25 characters!")
+    @NotNull(message = "{application.constraints.password.NotNull.message}")
+    @Size(min = 5,max = 25,message = "{application.constraints.password.Size.message}")
     private String password;
 
-    @NotBlank(message = "Password-repeat is required!")
-    @NotNull
+    @NotNull(message = "application.constraints.password-repeat.NotNull.message")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String passwordRepeat;
 

@@ -1,17 +1,17 @@
 package mysecurity.myjwt.entities.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
 @AllArgsConstructor
-public class UserResponse {
+public final class UserResponse {
 
-    private Long id;
-    private String email;
-    private LocalDateTime createdTime;
-    private String role;
+    private final Long id;
+    private final String email;
+    private final LocalDateTime createdTime;
+    private final String role;
 
 }
